@@ -173,17 +173,12 @@ function setIandBAmpsForSequence!(sequence, BAmp_Max, E_max, R, factorTeslaToCur
   Iv = IFromE_max(E_max/numFrames, R, sequence.t_TX, 1, alg)
   sequence.IAmp_MagV .= Iv 	                                                    # amplitude of excitation current
   sequence.BAmp .= sequence.IAmp_MagV .* factorCurrentToTesla[1] 					# amplitude of excitation field
-  E_total = R * I_RMS(Iv, alg)^2 * sequence.t_TX * numFrames
-  @info "Difference total energy consumption and E_max: $(E_total - E_max)"			
 end	
 
 function setIandBAmpsForSequence!(sequence, BAmp_Max, E_max, R, factorTeslaToCurrent, factorCurrentToTesla, alg::FZero_Excitation)
   Iv = IFromE_max(E_max/numFrames, R, sequence.t_TX, 1, alg)
   sequence.IAmp_MagV .= Iv 	                                                    # amplitude of excitation current
-
-  sequence.BAmp .= sequence.IAmp_MagV .* factorCurrentToTesla[1] 					# amplitude of excitation field
-  E_total = R * I_RMS(Iv, alg)^2 * sequence.t_TX * numFrames
-  @info "Difference total energy consumption and E_max: $(E_total - E_max)"				
+  sequence.BAmp .= sequence.IAmp_MagV .* factorCurrentToTesla[1] 					# amplitude of excitation field	
 end	
 
 
@@ -202,10 +197,8 @@ function setIandBAmpsForSequence!(sequence, BAmp_Max, E_max_Chirp, R, factorTesl
   upper = sequence.IAmp_MagV[1]*1.2
   result = optimize(x -> f([x]), lower, upper)
   Iv = Optim.minimizer(result)
-  E_max = getEmaxForAlg(sequence.BAmp, factorTeslaToCurrent, sequence, alg, R)
   sequence.IAmp_MagV .= Iv                                                        # amplitude of excitation current
-  sequence.BAmp .= sequence.IAmp_MagV .* factorCurrentToTesla[1] 						    # amplitude of excitation field
-  @info "Difference total energy consumption and E_max: $(E_max - E_max_Chirp)"							
+  sequence.BAmp .= sequence.IAmp_MagV .* factorCurrentToTesla[1] 						    # amplitude of excitation field	
 end	
 
 function setIandBAmpsForSequence!(sequence, BAmp_Max, E_max, R, factorTeslaToCurrent, factorCurrentToTesla, alg ::ChirpSin_Excitation)

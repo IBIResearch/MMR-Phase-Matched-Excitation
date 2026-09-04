@@ -1,4 +1,4 @@
-function simulate_meas(frameTime, sensor, sequence)
+function simulate_meas(frameTime, sensor, sequence; uncertainty_f_startRx = zeros(Float32, sequence.numFrames), uncertainty_f_endRx = zeros(Float32, sequence.numFrames), uncertainty_ψ_endRX = zeros(Float32, sequence.numFrames))
 	deflectionAngleAllFrames = zeros(Float32, sequence.numSamplesPerFrame,sequence.numFrames)
 	deflectionAngleAllFramesDot = zeros(Float32, sequence.numSamplesPerFrame,sequence.numFrames)
 
@@ -33,6 +33,11 @@ function simulate_meas(frameTime, sensor, sequence)
 		if frame_ < sequence.numFrames			
 			rxTimes = range(sequence.t_TX+1/sequence.fs, length = sequence.numRxSamples, step=1/sequence.fs)
 			f_startRx,f_endRX, ψ_endRX = getNewPhaseAndFreqs(sequence,deflectionAngleAllFrames[end-length(rxTimes)+1:end,frame_],rxTimes)
+			# add uncertainty to the frequency and phase estimation for the next frame
+			f_startRx += uncertainty_f_startRx[frame_+1]
+			f_endRX += uncertainty_f_endRx[frame_+1]
+			ψ_endRX += uncertainty_ψ_endRX[frame_+1]
+
 			if isa(alg, ChirpSin_Excitation) || isa(alg, ChirpRect_Excitation)
 				alg.f_TX_Array[frame_+1] = f_endRX
 				alg.m[frame_+1] = (f_startRx - f_endRX)/sequence.t_TX # update slope for next frame

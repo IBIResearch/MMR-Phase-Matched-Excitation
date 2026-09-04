@@ -8,12 +8,10 @@ colors = [
     RGBf(170/255, 156/255, 143/255),  # mocca
     RGBf(87/255, 87/255, 86/255),     # black (text)
     RGBf(255/255, 223/255, 0/255),    # yellow
-    RGBf(104/255, 195/255, 205/255),  # TUHH
-    RGBf(45/255, 198/255, 214/255),   # TUHH
-    RGBf(193/255, 216/255, 237/255)
 ]
 
 #########################################################################################
+noSamples = 10							 # samples for parameter uncertainty analysis
 # Coil and sensor constants.
 R = 4.0                                  # coil resistance in Ohm
 factorCurrentToTesla = 0.0008794831466724841  # T/A
@@ -107,3 +105,8 @@ zeros(Float64, numFrames),
 D,
 )
 algChirpPulsed.m[1] = -100
+
+algs = [algPulsed0, algPulsed, algChirpPulsed, algSin0, algSin,algChirp]
+colorAlgs = [colors[1], colors[3], colors[2], colors[5], colors[7], colors[4]]
+
+plotFrame = sequence.numFrames # frame to plot the complete time signals for all excitation algorithms
